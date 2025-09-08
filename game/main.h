@@ -20,6 +20,7 @@ private:
 
   SDL_Texture *idleTex, *runLeftTex, *runRightTex, *jumpLeftTex, *jumpRightTex;    // platform's current x velocity
   bool loopAnimation = true;
+  bool flipAnimation = false;
 
 public:
   
@@ -40,7 +41,11 @@ public:
     // Update animation
     lastFrameTime += (Uint32)(deltaTime * 1000); // Convert to milliseconds
     if (lastFrameTime >= (Uint32)animationDelay) {
-      currentFrame = loopAnimation ? (currentFrame + 1) % tex.num_frames_x : std::min(currentFrame + 1, (int)tex.num_frames_x - 1);
+      if(flipAnimation) {
+        currentFrame = loopAnimation ? (currentFrame - 1 + tex.num_frames_x) % tex.num_frames_x : std::max(currentFrame - 1, 0);
+      } else {
+        currentFrame = loopAnimation ? (currentFrame + 1) % tex.num_frames_x : std::min(currentFrame + 1, (int)tex.num_frames_x - 1);
+      }
       lastFrameTime = 0;
     }
 
@@ -60,7 +65,13 @@ public:
     float desiredVX = 0.0f;
     if (left ^ right) {                    // exactly one is held
       if(grounded && !wasMoving) {
-        tex = {left ? runLeftTex : runRightTex, 7, 0, 100, 64};
+        if(left) {
+          flipAnimation = true;
+          tex = {runLeftTex, 6, 0, 100, 64};
+        } else {
+          flipAnimation = false;
+          tex = {runRightTex, 6, 0, 100, 64};
+        }
         wasMoving = true;
       }
       desiredVX = left ? -runSpeed : runSpeed;
@@ -81,7 +92,13 @@ public:
       velocity.y = -1500.0f;
       grounded = false;
       wasGrounded = false;
-      tex = {left ? jumpLeftTex : jumpRightTex, 6, 0, 100, 64};
+      if(left) {
+        flipAnimation = true;
+        tex = {jumpLeftTex, 6, 0, 100, 64};
+      } else {
+        flipAnimation = false;
+        tex = {jumpRightTex, 6, 0, 100, 64};
+      }
     }
 
     // Bounce off screen edges (demonstrates entity system working) using window bounds push opposite direction
