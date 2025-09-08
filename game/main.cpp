@@ -19,15 +19,21 @@ int main(int argc, char *argv[]) {
   SDL_Texture *entityIdleTexture = 
     LoadTexture(engine.GetRenderer(),
                 "media/Idle_KG_1.bmp");
-  SDL_Texture *entityJumpTexture = 
+  SDL_Texture *entityJumpRightTexture = 
     LoadTexture(engine.GetRenderer(),
-                "media/Jump_KG_1.bmp");
-  SDL_Texture *entityWalkTexture = 
+                "media/Jump_Right.bmp");
+  SDL_Texture *entityWalkRightTexture = 
     LoadTexture(engine.GetRenderer(),
-                "media/Walking_KG_1.bmp");
+                "media/Walking_Right.bmp");
+  SDL_Texture *entityJumpLeftTexture = 
+    LoadTexture(engine.GetRenderer(),
+                "media/Jump_Left.bmp");
+  SDL_Texture *entityWalkLeftTexture = 
+    LoadTexture(engine.GetRenderer(),
+                "media/Walking_Left.bmp");
 
   // Create entities
-  TestEntity *testEntity = new TestEntity(100, 100, entityIdleTexture, entityWalkTexture, entityJumpTexture);
+  TestEntity *testEntity = new TestEntity(100, 100, entityIdleTexture, entityWalkLeftTexture, entityWalkRightTexture, entityJumpLeftTexture, entityJumpRightTexture);
   testEntity->hasPhysics = true; // Enable physics for TestEntity
 
   // Create platforms with random spawning

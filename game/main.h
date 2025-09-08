@@ -11,15 +11,19 @@ private:
   int currentFrame;
   Uint32 lastFrameTime;
   int animationDelay;
+
+  bool wasGrounded = false;
+  bool wasMoving = false;
   
   Entity* groundRef = nullptr;   // platform we're standing on (if any)
   float   groundVX  = 0.0f;  
 
-  SDL_Texture *idleTex, *runTex, *jumpTex;    // platform's current x velocity
+  SDL_Texture *idleTex, *runLeftTex, *runRightTex, *jumpLeftTex, *jumpRightTex;    // platform's current x velocity
+  bool loopAnimation = true;
 
 public:
   
-  TestEntity(float x, float y, SDL_Texture *idle, SDL_Texture *run, SDL_Texture *jump) : Entity(x, y, 176, 128) {
+  TestEntity(float x, float y, SDL_Texture *idle, SDL_Texture *runLeft, SDL_Texture *runRight, SDL_Texture *jumpLeft, SDL_Texture *jumpRight) : Entity(x, y, 176, 128) {
     velocity.x = 0.0f; // Move right at 150 pixels per second
     currentFrame = 0;
     lastFrameTime = 0;
@@ -29,14 +33,14 @@ public:
     tex.num_frames_y = 0;
     tex.frame_width = 100;
     tex.frame_height = 64;
-    idleTex = idle; runTex = run, jumpTex = jump;
+    idleTex = idle; runLeftTex = runLeft, runRightTex = runRight, jumpLeftTex = jumpLeft, jumpRightTex = jumpRight;
   }
 
   void Update(float deltaTime, InputManager *input) override {
     // Update animation
     lastFrameTime += (Uint32)(deltaTime * 1000); // Convert to milliseconds
     if (lastFrameTime >= (Uint32)animationDelay) {
-      currentFrame = (currentFrame + 1) % tex.num_frames_x;
+      currentFrame = loopAnimation ? (currentFrame + 1) % tex.num_frames_x : std::min(currentFrame + 1, (int)tex.num_frames_x - 1);
       lastFrameTime = 0;
     }
 
@@ -55,10 +59,13 @@ public:
     // base desired velocity from input (world-space)
     float desiredVX = 0.0f;
     if (left ^ right) {                    // exactly one is held
-      // if(grounded ) {
-      //   tex = {runTex, 7, 0, 100, 64};
-      // }
+      if(grounded && !wasMoving) {
+        tex = {left ? runLeftTex : runRightTex, 7, 0, 100, 64};
+        wasMoving = true;
+      }
       desiredVX = left ? -runSpeed : runSpeed;
+    } else {
+      wasMoving = false;
     }
 
     // rule:
@@ -70,10 +77,11 @@ public:
       velocity.x = carrierVX;              // inherit when idle
     }
 
-    if (input->IsKeyJustPressed(SDL_SCANCODE_SPACE) && grounded) {
+    if (input->IsKeyPressed(SDL_SCANCODE_SPACE) && grounded) {
       velocity.y = -1500.0f;
       grounded = false;
-      tex = {jumpTex, 6, 0, 100, 64};
+      wasGrounded = false;
+      tex = {left ? jumpLeftTex : jumpRightTex, 6, 0, 100, 64};
     }
 
     // Bounce off screen edges (demonstrates entity system working) using window bounds push opposite direction
@@ -100,8 +108,10 @@ public:
 
   void OnCollision(Entity* other, CollisionData* collData) override {
     if (collData->normal.y == -1.0f && collData->normal.x == 0.0f) {
-      if(!grounded) {
+      if(!wasGrounded || !wasMoving) {
         tex = {idleTex, 4, 0, 100, 64};
+        wasGrounded = true;
+        wasMoving = false;
       }
       grounded = true;
       velocity.y = 0.0f;
