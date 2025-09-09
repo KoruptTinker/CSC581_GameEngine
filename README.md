@@ -12,11 +12,12 @@ The **Game Engine Construction Project** is designed to provide comprehensive, h
 
 ## Installation
 ```bash
-git clone https://github.com/TaylorBrown96/CSC581_GameEngine.git --recursive
-cd .\CSC581_GameEngine\
+git clone https://github.com/KoruptTinker/CSC581_GameEngine.git --recursive
+git clone https://github.com/libsdl-org/SDL.git third_party/sdl
+cd CSC581_GameEngine
 cmake -S . -B build
 cmake --build build --config Release
-.\build\Release\GameEngine.exe
+./build/GameEngine
 ```
 
 > [!NOTE]  
