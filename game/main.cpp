@@ -6,77 +6,105 @@
 float Platform::lastSpawnTime = 0.0f;
 int Platform::platformCount = 0;
 
+// Static member definition for Collectible class
+bool Collectible::randomInitialized = false;
+
 int main(int argc, char *argv[]) {
   (void)argc;
   (void)argv;
 
   GameEngine engine;
-  if (!engine.Initialize("Game Engine", 1800, 1000)) {
+  if (!engine.Initialize("Game Engine", 1200, 800)) {
     return 1;
   }
   engine.GetRenderSystem()->SetScalingMode(ScalingMode::PROPORTIONAL);
 
-  SDL_Texture *entityIdleTexture = 
-    LoadTexture(engine.GetRenderer(),
-                "media/Idle_KG_1.bmp");
-  SDL_Texture *entityJumpRightTexture = 
-    LoadTexture(engine.GetRenderer(),
-                "media/Jump_Right.bmp");
-  SDL_Texture *entityWalkRightTexture = 
-    LoadTexture(engine.GetRenderer(),
-                "media/Walking_Right.bmp");
-  SDL_Texture *entityJumpLeftTexture = 
-    LoadTexture(engine.GetRenderer(),
-                "media/Jump_Left.bmp");
-  SDL_Texture *entityWalkLeftTexture = 
-    LoadTexture(engine.GetRenderer(),
-                "media/Walking_Left.bmp");
+  SDL_Texture *entityIdleTexture =
+      LoadTexture(engine.GetRenderer(), "media/Idle_KG_1.bmp");
+  SDL_Texture *entityJumpRightTexture =
+      LoadTexture(engine.GetRenderer(), "media/Jump_Right.bmp");
+  SDL_Texture *entityWalkRightTexture =
+      LoadTexture(engine.GetRenderer(), "media/Walking_Right.bmp");
+  SDL_Texture *entityJumpLeftTexture =
+      LoadTexture(engine.GetRenderer(), "media/Jump_Left.bmp");
+  SDL_Texture *entityWalkLeftTexture =
+      LoadTexture(engine.GetRenderer(), "media/Walking_Left.bmp");
+  SDL_Texture *coinsTexture =
+      LoadTexture(engine.GetRenderer(), "media/coins.bmp");
 
   // Create entities
-  TestEntity *testEntity = new TestEntity(100, 100, entityIdleTexture, entityWalkLeftTexture, entityWalkRightTexture, entityJumpLeftTexture, entityJumpRightTexture);
-  testEntity->hasPhysics = true; // Enable physics for TestEntity
+  Player *player = new Player(
+      100, 100, entityIdleTexture, entityWalkLeftTexture,
+      entityWalkRightTexture, entityJumpLeftTexture, entityJumpRightTexture);
+  player->hasPhysics = true; // Enable physics for Player
 
   // Create platforms with random spawning
-  Platform *platform1 = new Platform(0, 925, 400, 75, true);  // Ground platform
-  platform1->hasPhysics = false;        // no integration
-  platform1->affectedByGravity = false; // no gravity
+  Platform *platform1 = new Platform(0, 725, 400, 75, true); // Ground platform
+  platform1->hasPhysics = false;                             // no integration
+  platform1->affectedByGravity = false;                      // no gravity
   platform1->isStatic = true;
 
-  Platform *platform2 = new Platform(600, 900, 200, 75);
+  Platform *platform2 = new Platform(600, 500, 200, 75);
   platform2->hasPhysics = false; // we want horizontal motion we code ourselves
   platform2->affectedByGravity = false; // but no falling
-  platform2->isStatic = true; // treat as static for collisions if you have special handling
+  platform2->isStatic =
+      true; // treat as static for collisions if you have special handling
 
-  Platform *platform3 = new Platform(1000, 850, 300, 75);
+  Platform *platform3 = new Platform(1000, 600, 300, 75);
   platform3->hasPhysics = false; // we want horizontal motion we code ourselves
   platform3->affectedByGravity = false; // but no falling
-  platform3->isStatic = true; // treat as static for collisions if you have special handling
+  platform3->isStatic =
+      true; // treat as static for collisions if you have special handling
 
-  Platform *platform4 = new Platform(1500, 890, 200, 75);
+  Platform *platform4 = new Platform(1500, 390, 200, 75);
   platform4->hasPhysics = false; // we want horizontal motion we code ourselves
   platform4->affectedByGravity = false; // but no falling
-  platform4->isStatic = true; // treat as static for collisions if you have special handling
+  platform4->isStatic =
+      true; // treat as static for collisions if you have special handling
 
-  Platform *platform5 = new Platform(1900, 750, 100, 75);
+  Platform *platform5 = new Platform(1900, 550, 100, 75);
   platform5->hasPhysics = false; // we want horizontal motion we code ourselves
   platform5->affectedByGravity = false; // but no falling
-  platform5->isStatic = true; // treat as static for collisions if you have special handling
+  platform5->isStatic =
+      true; // treat as static for collisions if you have special handling
+
+  // Create collectibles (coins) with different types
+  Collectible *coin1 = new Collectible(300, 650, coinsTexture, 0); // Type 0 (first row)
+  Collectible *coin2 = new Collectible(450, 650, coinsTexture, 1); // Type 1 (second row)
+  Collectible *coin3 = new Collectible(600, 650, coinsTexture, 2); // Type 2 (third row)
+  Collectible *coin4 = new Collectible(750, 600, coinsTexture, 0); // Type 0
+  Collectible *coin5 = new Collectible(900, 600, coinsTexture, 1); // Type 1
+  Collectible *coin6 = new Collectible(1100, 600, coinsTexture, 2); // Type 2
+  Collectible *coin7 = new Collectible(1300, 600, coinsTexture, 0); // Type 0
+  Collectible *coin8 = new Collectible(1600, 550, coinsTexture, 1); // Type 1
+  Collectible *coin9 = new Collectible(1800, 500, coinsTexture, 2); // Type 2
 
   // Add entities to the engine
-  engine.AddEntity(testEntity);
+  engine.AddEntity(player);
   engine.AddEntity(platform1);
   engine.AddEntity(platform2);
   engine.AddEntity(platform3);
   engine.AddEntity(platform4);
   engine.AddEntity(platform5);
+  
+  // Add collectibles to the engine
+  engine.AddEntity(coin1);
+  engine.AddEntity(coin2);
+  engine.AddEntity(coin3);
+  engine.AddEntity(coin4);
+  engine.AddEntity(coin5);
+  engine.AddEntity(coin6);
+  engine.AddEntity(coin7);
+  engine.AddEntity(coin8);
+  engine.AddEntity(coin9);
 
   if (entityIdleTexture) {
-    testEntity->SetTexture(entityIdleTexture);
+    player->SetTexture(entityIdleTexture);
   }
 
   SDL_Texture *platformTexture =
-    LoadTexture(engine.GetRenderer(),
-                "media/cartooncrypteque_platform_basicground_idle.bmp");
+      LoadTexture(engine.GetRenderer(),
+                  "media/cartooncrypteque_platform_basicground_idle.bmp");
   if (platformTexture) {
     platform1->SetTexture(platformTexture);
     platform2->SetTexture(platformTexture);
