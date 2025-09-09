@@ -1,12 +1,9 @@
 #include "GameEngine.h"
-// #include <memory>
 #include "main.h"
 
-// Static member definitions for Platform class
 float Platform::lastSpawnTime = 0.0f;
 int Platform::platformCount = 0;
 
-// Static member definition for Collectible class
 bool Collectible::randomInitialized = false;
 
 int main(int argc, char *argv[]) {
@@ -45,41 +42,35 @@ int main(int argc, char *argv[]) {
   platform1->isStatic = true;
 
   Platform *platform2 = new Platform(600, 500, 200, 75);
-  platform2->hasPhysics = false; // we want horizontal motion we code ourselves
-  platform2->affectedByGravity = false; // but no falling
-  platform2->isStatic =
-      true; // treat as static for collisions if you have special handling
+  platform2->hasPhysics = false; 
+  platform2->affectedByGravity = false; 
+  platform2->isStatic = true; 
 
   Platform *platform3 = new Platform(1000, 600, 300, 75);
-  platform3->hasPhysics = false; // we want horizontal motion we code ourselves
-  platform3->affectedByGravity = false; // but no falling
-  platform3->isStatic =
-      true; // treat as static for collisions if you have special handling
+  platform3->hasPhysics = false; 
+  platform3->affectedByGravity = false; 
+  platform3->isStatic = true; 
 
   Platform *platform4 = new Platform(1500, 390, 200, 75);
-  platform4->hasPhysics = false; // we want horizontal motion we code ourselves
-  platform4->affectedByGravity = false; // but no falling
-  platform4->isStatic =
-      true; // treat as static for collisions if you have special handling
+  platform4->hasPhysics = false; 
+  platform4->affectedByGravity = false; 
+  platform4->isStatic = true; 
 
   Platform *platform5 = new Platform(1900, 550, 100, 75);
-  platform5->hasPhysics = false; // we want horizontal motion we code ourselves
-  platform5->affectedByGravity = false; // but no falling
-  platform5->isStatic =
-      true; // treat as static for collisions if you have special handling
+  platform5->hasPhysics = false; 
+  platform5->affectedByGravity = false; 
+  platform5->isStatic = true; 
 
-  // Create collectibles (coins) with different types
-  Collectible *coin1 = new Collectible(300, 650, coinsTexture, 0); // Type 0 (first row)
-  Collectible *coin2 = new Collectible(450, 650, coinsTexture, 1); // Type 1 (second row)
-  Collectible *coin3 = new Collectible(600, 650, coinsTexture, 2); // Type 2 (third row)
-  Collectible *coin4 = new Collectible(750, 600, coinsTexture, 0); // Type 0
-  Collectible *coin5 = new Collectible(900, 600, coinsTexture, 1); // Type 1
-  Collectible *coin6 = new Collectible(1100, 600, coinsTexture, 2); // Type 2
-  Collectible *coin7 = new Collectible(1300, 600, coinsTexture, 0); // Type 0
-  Collectible *coin8 = new Collectible(1600, 550, coinsTexture, 1); // Type 1
-  Collectible *coin9 = new Collectible(1800, 500, coinsTexture, 2); // Type 2
+  Collectible *coin1 = new Collectible(300, 650, coinsTexture, 0); 
+  Collectible *coin2 = new Collectible(450, 650, coinsTexture, 1); 
+  Collectible *coin3 = new Collectible(600, 650, coinsTexture, 2); 
+  Collectible *coin4 = new Collectible(750, 600, coinsTexture, 0); 
+  Collectible *coin5 = new Collectible(900, 600, coinsTexture, 1); 
+  Collectible *coin6 = new Collectible(1100, 600, coinsTexture, 2); 
+  Collectible *coin7 = new Collectible(1300, 600, coinsTexture, 0); 
+  Collectible *coin8 = new Collectible(1600, 550, coinsTexture, 1);
+  Collectible *coin9 = new Collectible(1800, 500, coinsTexture, 2); 
 
-  // Add entities to the engine
   engine.AddEntity(player);
   engine.AddEntity(platform1);
   engine.AddEntity(platform2);
@@ -87,7 +78,6 @@ int main(int argc, char *argv[]) {
   engine.AddEntity(platform4);
   engine.AddEntity(platform5);
   
-  // Add collectibles to the engine
   engine.AddEntity(coin1);
   engine.AddEntity(coin2);
   engine.AddEntity(coin3);

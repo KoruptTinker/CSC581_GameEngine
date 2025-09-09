@@ -4,9 +4,6 @@
 #include <ctime>
 #include <iostream>
 #include <vector>
-// #include <memory>
-
-// Forward declarations
 
 class Platform : public Entity {
   private:
@@ -158,9 +155,7 @@ public:
       wasMoving = false;
     }
 
-    // rule:
-    // - if player is giving input -> move at constant runSpeed in world space
-    // - if no input              -> ride the platform
+
     if (desiredVX != 0.0f) {
       velocity.x = desiredVX; // ignore platform motion while moving
     } else {
@@ -271,7 +266,7 @@ public:
   }
 
   void Update(float deltaTime, InputManager* input) override {
-    (void)input; // Collectibles don't respond to input
+    (void)input; 
     
     // Handle respawn timer
     if (isCollected) {
