@@ -3,6 +3,7 @@
 .clangd
 
 build/*
+.vscode/*
 
 # Prerequisites
 *.d
